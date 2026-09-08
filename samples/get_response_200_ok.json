@@ -1,0 +1,29 @@
+{
+  "success": true,
+  "statusCode": 200,
+  "submissionId": "SUB-731934",
+  "requestId": "REQ-54321",
+  "employeeName": "Alice Cooper",
+  "documentType": {
+    "code": "government-id",
+    "label": "Government Issued Photo ID",
+    "mandatory": true
+  },
+  "submissionDate": "2026-09-08",
+  "status": "VERIFIED",
+  "file": {
+    "name": "passport_scan.pdf",
+    "sizeBytes": 2097152,
+    "sizeFormatted": "2 MB",
+    "mimeType": "application/pdf",
+    "extension": "PDF",
+    "checksumSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "consentCertified": true,
+  "auditTrail": {
+    "submittedAt": "2026-09-08T10:45:00.000Z",
+    "reviewedAt": "2026-09-08T11:15:00.000Z",
+    "reviewedBy": "hr_reviewer_agent_04",
+    "verificationNotes": "Clear government photo ID matching legal name."
+  }
+}

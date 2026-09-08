@@ -1,0 +1,10 @@
+{
+  "success": false,
+  "statusCode": 409,
+  "error": "RESOURCE_CONFLICT",
+  "message": "A verification document for type 'government-id' with Request ID 'REQ-54321' already exists.",
+  "timestamp": "2026-09-08T10:45:15.340Z",
+  "path": "/api/v1/onboarding/documents",
+  "correlationId": "corr-conflict-8821",
+  "existingResourceId": "SUB-731934"
+}

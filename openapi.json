@@ -1,0 +1,666 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "New Hire Document Submission & Status Retrieval API",
+    "description": "RESTful API contract for the Employee Center New Hire Onboarding Portal.\nProvides endpoints for submitting onboarding verification documents and retrieving real-time verification status.\n\n### Architectural Principles:\n- **RESTful Resource Modeling**: `/documents` as primary resource collection.\n- **HTTP Methods**: `POST` for submission, `GET` for status querying.\n- **Standard HTTP Status Codes**: Explicit mappings for 200, 201, 400, 401, 404, 409, and 500.\n- **Strict JSON Schema Validation**: Typed fields, formats, regex constraints, and required attributes.\n",
+    "version": "1.0.0",
+    "contact": {
+      "name": "HR Systems Integration Team",
+      "email": "hr-api-support@company.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.onboarding.company.com/api/v1",
+      "description": "Production REST Gateway"
+    },
+    {
+      "url": "https://staging-api.onboarding.company.com/api/v1",
+      "description": "Staging / Sandbox Environment"
+    },
+    {
+      "url": "http://localhost:8080/api/v1",
+      "description": "Local Mock Server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Document Submission",
+      "description": "Operations for uploading and validating onboarding documents"
+    },
+    {
+      "name": "Document Status",
+      "description": "Operations for inspecting verification and approval lifecycle"
+    }
+  ],
+  "paths": {
+    "/onboarding/documents": {
+      "post": {
+        "tags": ["Document Submission"],
+        "summary": "Submit a new hire verification document",
+        "description": "Accepts employee details, document metadata, and file information.\nConverts valid submissions into a registered onboarding document record.\nPrevents duplicate submissions via Idempotency-Key or unique Request ID + Document Type constraints.\n",
+        "operationId": "submitDocument",
+        "security": [
+          { "BearerAuth": [] },
+          { "ApiKeyAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "description": "Unique client-generated UUID to ensure duplicate submissions are safely ignored.",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"
+            }
+          },
+          {
+            "name": "X-Correlation-ID",
+            "in": "header",
+            "required": false,
+            "description": "Distributed tracing identifier.",
+            "schema": {
+              "type": "string",
+              "example": "corr-789a-4bc1-bf22-1092837465ab"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "JSON document submission payload matching the onboarding schema.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DocumentSubmissionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Document successfully submitted, validated, and registered.",
+            "headers": {
+              "Location": {
+                "description": "URI of the created document status resource.",
+                "schema": {
+                  "type": "string",
+                  "example": "/api/v1/onboarding/documents/SUB-731934"
+                }
+              },
+              "X-Correlation-ID": {
+                "description": "Trace ID echoed back to client.",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentSubmissionResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Client validation failed (e.g. invalid date format, future date, missing fields, file > 10MB).",
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication credentials missing, expired, or invalid.",
+            "headers": {
+              "WWW-Authenticate": {
+                "description": "Defines the authentication scheme.",
+                "schema": {
+                  "type": "string",
+                  "example": "Bearer realm=\"onboarding-api\""
+                }
+              },
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - A submission for this document type and Request ID already exists and is pending or approved.",
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error - Unexpected server or database exception while persisting record.",
+            "headers": {
+              "Retry-After": {
+                "description": "Suggested wait time in seconds before retrying.",
+                "schema": {
+                  "type": "integer",
+                  "example": 30
+                }
+              },
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/onboarding/documents/{submissionId}": {
+      "get": {
+        "tags": ["Document Status"],
+        "summary": "Retrieve status and verification details for a submitted document",
+        "description": "Queries the current review status, file verification checksum, HR audit trail, and compliance flags for a specific document submission.\n",
+        "operationId": "getDocumentStatus",
+        "security": [
+          { "BearerAuth": [] },
+          { "ApiKeyAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "submissionId",
+            "in": "path",
+            "required": true,
+            "description": "Unique tracking reference code assigned at submission (e.g. SUB-731934).",
+            "schema": {
+              "type": "string",
+              "pattern": "^SUB-[0-9]{6,10}$",
+              "example": "SUB-731934"
+            }
+          },
+          {
+            "name": "X-Correlation-ID",
+            "in": "header",
+            "required": false,
+            "description": "Optional distributed tracing identifier.",
+            "schema": {
+              "type": "string",
+              "example": "corr-query-98124"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Document record found; status and verification payload returned.",
+            "headers": {
+              "ETag": {
+                "description": "Entity tag for optimistic cache validation.",
+                "schema": {
+                  "type": "string",
+                  "example": "W/\"sub-731934-v1\""
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "example": "private, max-age=60"
+                }
+              },
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentStatusResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Malformed submissionId parameter format.",
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication token missing or invalid.",
+            "headers": {
+              "WWW-Authenticate": {
+                "schema": {
+                  "type": "string",
+                  "example": "Bearer realm=\"onboarding-api\""
+                }
+              },
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - No document submission exists with the specified submissionId.",
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error - Server failure during record lookup.",
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Enter standard JWT Bearer token obtained from HR Identity Provider."
+      },
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key",
+        "description": "Internal microservice API key authentication."
+      }
+    },
+    "schemas": {
+      "DocumentTypeEnum": {
+        "type": "string",
+        "description": "Supported onboarding verification document types.",
+        "enum": [
+          "government-id",
+          "tax-form",
+          "degree-certificate",
+          "relieving-letter",
+          "direct-deposit",
+          "nda-agreement"
+        ],
+        "example": "government-id"
+      },
+      "FilePayload": {
+        "type": "object",
+        "required": ["name", "sizeBytes", "mimeType", "extension"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Original filename of the uploaded verification document.",
+            "maxLength": 255,
+            "example": "passport_scan.pdf"
+          },
+          "sizeBytes": {
+            "type": "integer",
+            "description": "File size in bytes (maximum 10 MB = 10,485,760 bytes).",
+            "minimum": 1,
+            "maximum": 10485760,
+            "example": 2097152
+          },
+          "sizeFormatted": {
+            "type": "string",
+            "description": "Human-readable file size string.",
+            "example": "2 MB"
+          },
+          "mimeType": {
+            "type": "string",
+            "description": "Allowed document MIME types.",
+            "enum": ["application/pdf", "image/png", "image/jpeg"],
+            "example": "application/pdf"
+          },
+          "extension": {
+            "type": "string",
+            "description": "Upper-case document file extension.",
+            "enum": ["PDF", "PNG", "JPG", "JPEG"],
+            "example": "PDF"
+          },
+          "contentBase64": {
+            "type": "string",
+            "description": "Base64 encoded binary payload of the document file.",
+            "example": "JVBERi0xLjQKJcTl8uXr..."
+          }
+        }
+      },
+      "DocumentSubmissionRequest": {
+        "type": "object",
+        "description": "Payload for registering an onboarding document submission.",
+        "required": [
+          "employeeName",
+          "requestId",
+          "documentType",
+          "submissionDate",
+          "file",
+          "consentCertified"
+        ],
+        "properties": {
+          "employeeName": {
+            "type": "string",
+            "description": "Official full legal name as recorded on government identifications.",
+            "minLength": 2,
+            "maxLength": 60,
+            "pattern": "^[a-zA-Z\\s.'-]{2,60}$",
+            "example": "Alice Cooper"
+          },
+          "requestId": {
+            "type": "string",
+            "description": "Unique onboarding applicant request identifier.",
+            "minLength": 3,
+            "maxLength": 20,
+            "pattern": "^[A-Za-z0-9_-]{3,20}$",
+            "example": "REQ-54321"
+          },
+          "documentType": {
+            "$ref": "#/components/schemas/DocumentTypeEnum"
+          },
+          "submissionDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Date of document submission (ISO 8601 YYYY-MM-DD). Must be on or before current date.",
+            "example": "2026-09-08"
+          },
+          "file": {
+            "$ref": "#/components/schemas/FilePayload"
+          },
+          "consentCertified": {
+            "type": "boolean",
+            "description": "Mandatory legal declaration certifying accuracy and authenticity.",
+            "enum": [true],
+            "example": true
+          }
+        }
+      },
+      "DocumentSubmissionResponse": {
+        "type": "object",
+        "description": "Confirmation and registered metadata returned upon successful document submission.",
+        "required": [
+          "success",
+          "statusCode",
+          "submissionId",
+          "trackingUrl",
+          "status",
+          "submittedAt",
+          "data"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "statusCode": {
+            "type": "integer",
+            "example": 201
+          },
+          "submissionId": {
+            "type": "string",
+            "pattern": "^SUB-[0-9]{6,10}$",
+            "example": "SUB-731934"
+          },
+          "trackingUrl": {
+            "type": "string",
+            "format": "uri",
+            "example": "https://api.onboarding.company.com/api/v1/onboarding/documents/SUB-731934"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING_VERIFICATION",
+              "UNDER_REVIEW",
+              "VERIFIED",
+              "REJECTED"
+            ],
+            "example": "PENDING_VERIFICATION"
+          },
+          "submittedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-09-08T10:45:00Z"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "employeeName": {
+                "type": "string",
+                "example": "Alice Cooper"
+              },
+              "requestId": {
+                "type": "string",
+                "example": "REQ-54321"
+              },
+              "documentType": {
+                "type": "object",
+                "properties": {
+                  "code": { "type": "string", "example": "government-id" },
+                  "label": { "type": "string", "example": "Government Issued Photo ID" },
+                  "mandatory": { "type": "boolean", "example": true }
+                }
+              },
+              "submissionDate": {
+                "type": "string",
+                "format": "date",
+                "example": "2026-09-08"
+              },
+              "file": {
+                "$ref": "#/components/schemas/FilePayload"
+              },
+              "consentCertified": {
+                "type": "boolean",
+                "example": true
+              }
+            }
+          },
+          "timeline": {
+            "type": "object",
+            "properties": {
+              "expectedReviewBy": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2026-09-10T17:00:00Z"
+              },
+              "slaHours": {
+                "type": "integer",
+                "example": 48
+              }
+            }
+          }
+        }
+      },
+      "DocumentStatusResponse": {
+        "type": "object",
+        "description": "Full verification status and audit record for a document submission.",
+        "required": [
+          "success",
+          "statusCode",
+          "submissionId",
+          "requestId",
+          "employeeName",
+          "documentType",
+          "submissionDate",
+          "status",
+          "file",
+          "consentCertified",
+          "auditTrail"
+        ],
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "statusCode": { "type": "integer", "example": 200 },
+          "submissionId": { "type": "string", "example": "SUB-731934" },
+          "requestId": { "type": "string", "example": "REQ-54321" },
+          "employeeName": { "type": "string", "example": "Alice Cooper" },
+          "documentType": {
+            "type": "object",
+            "properties": {
+              "code": { "type": "string", "example": "government-id" },
+              "label": { "type": "string", "example": "Government Issued Photo ID" },
+              "mandatory": { "type": "boolean", "example": true }
+            }
+          },
+          "submissionDate": { "type": "string", "format": "date", "example": "2026-09-08" },
+          "status": {
+            "type": "string",
+            "enum": ["PENDING_VERIFICATION", "UNDER_REVIEW", "VERIFIED", "REJECTED"],
+            "example": "VERIFIED"
+          },
+          "file": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string", "example": "passport_scan.pdf" },
+              "sizeBytes": { "type": "integer", "example": 2097152 },
+              "sizeFormatted": { "type": "string", "example": "2 MB" },
+              "mimeType": { "type": "string", "example": "application/pdf" },
+              "extension": { "type": "string", "example": "PDF" },
+              "checksumSha256": {
+                "type": "string",
+                "example": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              }
+            }
+          },
+          "consentCertified": { "type": "boolean", "example": true },
+          "auditTrail": {
+            "type": "object",
+            "required": ["submittedAt"],
+            "properties": {
+              "submittedAt": { "type": "string", "format": "date-time", "example": "2026-09-08T10:45:00Z" },
+              "reviewedAt": { "type": "string", "format": "date-time", "nullable": true, "example": "2026-09-08T11:15:00Z" },
+              "reviewedBy": { "type": "string", "nullable": true, "example": "hr_reviewer_agent_04" },
+              "verificationNotes": { "type": "string", "nullable": true, "example": "Clear government photo ID matching legal name." }
+            }
+          }
+        }
+      },
+      "ValidationErrorItem": {
+        "type": "object",
+        "required": ["field", "issue"],
+        "properties": {
+          "field": { "type": "string", "example": "submissionDate" },
+          "issue": { "type": "string", "example": "Submission date cannot be in the future." },
+          "rejectedValue": { "nullable": true, "example": "2026-12-31" }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "description": "Standardized error envelope returned for all non-2xx status codes.",
+        "required": [
+          "success",
+          "statusCode",
+          "error",
+          "message",
+          "timestamp",
+          "path"
+        ],
+        "properties": {
+          "success": { "type": "boolean", "example": false },
+          "statusCode": { "type": "integer", "example": 400 },
+          "error": { "type": "string", "example": "VALIDATION_FAILED" },
+          "message": { "type": "string", "example": "Request payload failed client-side validation rules." },
+          "timestamp": { "type": "string", "format": "date-time", "example": "2026-09-08T10:45:05Z" },
+          "path": { "type": "string", "example": "/api/v1/onboarding/documents" },
+          "correlationId": { "type": "string", "example": "corr-789a-4bc1-bf22-1092837465ab" },
+          "details": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ValidationErrorItem" }
+          },
+          "existingResourceId": {
+            "type": "string",
+            "nullable": true,
+            "example": "SUB-731934"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "success": false,
+  "statusCode": 401,
+  "error": "UNAUTHORIZED",
+  "message": "Missing or invalid Bearer Authorization token in header.",
+  "timestamp": "2026-09-08T10:45:10.450Z",
+  "path": "/api/v1/onboarding/documents",
+  "correlationId": "corr-unauth-9912a"
+}

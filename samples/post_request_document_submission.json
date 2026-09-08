@@ -1,0 +1,15 @@
+{
+  "employeeName": "Alice Cooper",
+  "requestId": "REQ-54321",
+  "documentType": "government-id",
+  "submissionDate": "2026-09-08",
+  "file": {
+    "name": "passport_scan.pdf",
+    "sizeBytes": 2097152,
+    "sizeFormatted": "2 MB",
+    "mimeType": "application/pdf",
+    "extension": "PDF",
+    "contentBase64": "JVBERi0xLjQKJcTl8uXrp/Og0MTGcT4KMSAwIG9ia...[base64-truncated]"
+  },
+  "consentCertified": true
+}

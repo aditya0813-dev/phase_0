@@ -1,0 +1,21 @@
+{
+  "success": false,
+  "statusCode": 400,
+  "error": "VALIDATION_FAILED",
+  "message": "Request payload failed client-side validation rules.",
+  "timestamp": "2026-09-08T10:45:05.120Z",
+  "path": "/api/v1/onboarding/documents",
+  "correlationId": "corr-789a-4bc1-bf22-1092837465ab",
+  "details": [
+    {
+      "field": "submissionDate",
+      "issue": "Submission date cannot be in the future.",
+      "rejectedValue": "2026-12-31"
+    },
+    {
+      "field": "file.sizeBytes",
+      "issue": "File size exceeds 10 MB limit (10485760 bytes).",
+      "rejectedValue": 15728640
+    }
+  ]
+}

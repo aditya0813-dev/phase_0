@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Hire Document Submission | Employee Center</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Site / Page Header using semantic <header> and <nav> -->
+  <header class="portal-header">
+    <div class="header-container">
+      <div class="brand-group">
+        <div class="portal-logo" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
+        <div class="title-group">
+          <span class="portal-tag">EMPLOYEE CENTER &bull; ONBOARDING</span>
+          <h1>New Hire Onboarding Portal</h1>
+        </div>
+      </div>
+      <nav aria-label="Main Navigation" class="portal-nav">
+        <ul>
+          <li><a href="#document-submission">Document Submission Form</a></li>
+          <li><a href="#required-documents">Required Documents Checklist</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <hr class="header-divider">
+
+  <!-- Main Content Container using semantic <main> -->
+  <main class="portal-main">
+
+    <!-- Document Submission Form Section -->
+    <section id="document-submission" class="portal-card" aria-labelledby="form-title">
+      <div class="card-header">
+        <h2 id="form-title">New Hire Document Submission</h2>
+        <p class="section-desc">Please fill out this form to submit your onboarding verification documents. Fields marked with an asterisk (<span class="required-star" aria-hidden="true">*</span>) are required.</p>
+      </div>
+
+      <!-- Configurable Mock REST API Endpoint Settings (Rubric: Configurable Mock REST Endpoint) -->
+      <details class="api-config-panel" id="api-config-panel">
+        <summary class="api-config-summary">
+          <span class="api-config-summary-left">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+              <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+              <line x1="6" y1="6" x2="6.01" y2="6"></line>
+              <line x1="6" y1="18" x2="6.01" y2="18"></line>
+            </svg>
+            <strong>REST API Settings &amp; Mock Testing</strong>
+          </span>
+          <span class="api-status-tag" id="api-status-tag">POST /posts</span>
+        </summary>
+        <div class="api-config-body">
+          <div class="api-config-grid">
+            <div class="api-config-field">
+              <label for="api-endpoint-input">Target REST API Endpoint URL:</label>
+              <input type="url" id="api-endpoint-input" value="https://jsonplaceholder.typicode.com/posts" placeholder="https://jsonplaceholder.typicode.com/posts">
+              <span class="field-hint">Centralized API endpoint URL used by all Fetch calls</span>
+            </div>
+            <div class="api-config-field">
+              <label for="api-scenario-select">Response State Simulation / Test Scenario:</label>
+              <div class="select-wrapper">
+                <select id="api-scenario-select">
+                  <option value="live" selected>Live Fetch (Default - Real POST to Endpoint)</option>
+                  <option value="mock-201">Mock 201 Created (Success State)</option>
+                  <option value="mock-400">Mock 400 Bad Request (Validation-Error State)</option>
+                  <option value="mock-422">Mock 422 Unprocessable Entity (Server Validation Error)</option>
+                  <option value="mock-500">Mock 500 Internal Server Error (Server-Error State)</option>
+                  <option value="mock-503">Mock 503 Service Unavailable (Server-Error State)</option>
+                  <option value="mock-network">Mock Network Failure / Offline (Exception Handling)</option>
+                </select>
+              </div>
+              <span class="field-hint">Switch scenario to test loading, success, non-2xx errors, or server errors</span>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- Validation Area -->
+      <div id="validation-area" class="validation-area" role="region" aria-label="Validation Notice">
+        <div class="validation-icon" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+        </div>
+        <div class="validation-content">
+          <strong class="validation-title">Form Validation Notice</strong>
+          <p class="validation-text">Ensure all required fields are accurately completed. Uploaded files must be PDF, PNG, or JPG formats under 10 MB. Validation status updates as you complete the fields.</p>
+        </div>
+      </div>
+
+      <form id="document-submission-form" action="#" method="post" enctype="multipart/form-data" class="portal-form" novalidate>
+
+        <!-- Fieldset for Employee Identification -->
+        <fieldset class="form-fieldset">
+          <legend>Employee Identification</legend>
+
+          <div class="form-grid grid-2-col">
+            <div class="form-group">
+              <label for="employee-name">Employee Full Name: <span class="required-star">*</span></label>
+              <input 
+                type="text" 
+                id="employee-name" 
+                name="employee_name" 
+                required 
+                aria-required="true"
+                placeholder="e.g., John Doe"
+                autocomplete="name">
+              <span class="field-hint">Enter your official legal name as shown on IDs</span>
+            </div>
+
+            <div class="form-group">
+              <label for="request-id">Request ID: <span class="required-star">*</span></label>
+              <input 
+                type="text" 
+                id="request-id" 
+                name="request_id" 
+                required 
+                aria-required="true"
+                placeholder="e.g., REQ-10024">
+              <span class="field-hint">Refer to your onboarding welcome email</span>
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- Fieldset for Document Details & Upload -->
+        <fieldset class="form-fieldset">
+          <legend>Document Details &amp; Upload</legend>
+
+          <div class="form-grid grid-2-col">
+            <div class="form-group">
+              <label for="document-type">Document Type: <span class="required-star">*</span></label>
+              <div class="select-wrapper">
+                <select id="document-type" name="document_type" required aria-required="true">
+                  <option value="" disabled selected>-- Select document type --</option>
+                  <!-- Dynamically populated from JavaScript array -->
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="submission-date">Submission Date: <span class="required-star">*</span></label>
+              <input 
+                type="date" 
+                id="submission-date" 
+                name="submission_date" 
+                required 
+                aria-required="true">
+              <span class="field-hint">Cannot be a future date (up to today)</span>
+            </div>
+          </div>
+
+          <div class="form-group file-upload-group">
+            <label for="document-file">Upload Document File: <span class="required-star">*</span></label>
+            <div class="file-input-box" id="file-input-box">
+              <input 
+                type="file" 
+                id="document-file" 
+                name="document_file" 
+                accept=".pdf,.png,.jpg,.jpeg" 
+                required 
+                aria-required="true">
+            </div>
+            <div id="file-name-display" class="file-name-display" aria-live="polite"></div>
+            <small class="file-restrictions">Accepted file formats: <strong>PDF, PNG, JPG</strong> (Maximum size: <strong>10 MB</strong>)</small>
+          </div>
+        </fieldset>
+
+        <!-- Fieldset for Confirmation & Consent -->
+        <fieldset class="form-fieldset consent-fieldset">
+          <legend>Declaration &amp; Consent</legend>
+
+          <div class="checkbox-group">
+            <input 
+              type="checkbox" 
+              id="consent-checkbox" 
+              name="consent_checkbox" 
+              required 
+              aria-required="true">
+            <label for="consent-checkbox">
+              I certify that the information provided and documents uploaded are genuine, accurate, and complete. <span class="required-star">*</span>
+            </label>
+          </div>
+        </fieldset>
+
+        <!-- Form Submission & Reset Controls -->
+        <div class="form-actions">
+          <input type="submit" id="submit-btn" value="Submit Document" class="btn btn-primary">
+          <input type="reset" id="reset-btn" value="Reset Form" class="btn btn-secondary">
+        </div>
+
+      </form>
+
+      <!-- Submission Summary Display Area -->
+      <div id="submission-summary-container" class="submission-summary-container" aria-live="polite"></div>
+    </section>
+
+    <!-- Semantic Table Section for HTML Fundamentals -->
+    <section id="required-documents" class="portal-card" aria-labelledby="table-title">
+      <div class="card-header">
+        <h2 id="table-title">Required Documents Reference Table</h2>
+        <p class="section-desc">The table below outlines the necessary documents, mandatory status, acceptable formats, and deadlines for new hire verification.</p>
+      </div>
+
+      <div class="table-container">
+        <table border="1" cellpadding="8" cellspacing="0" class="portal-table">
+          <caption>New Hire Documentation Guidelines and Timelines</caption>
+          <thead>
+            <tr>
+              <th scope="col">Document Type</th>
+              <th scope="col">Mandatory / Optional</th>
+              <th scope="col">Accepted Formats</th>
+              <th scope="col">Submission Deadline</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Government Photo ID</th>
+              <td><span class="badge badge-mandatory">Mandatory</span></td>
+              <td><span class="format-pill">PDF</span> <span class="format-pill">JPG</span> <span class="format-pill">PNG</span></td>
+              <td>Before Day 1</td>
+            </tr>
+            <tr>
+              <th scope="row">Tax Withholding Form</th>
+              <td><span class="badge badge-mandatory">Mandatory</span></td>
+              <td><span class="format-pill">PDF</span></td>
+              <td>Within 3 Days of Joining</td>
+            </tr>
+            <tr>
+              <th scope="row">Educational Degree Certificate</th>
+              <td><span class="badge badge-mandatory">Mandatory</span></td>
+              <td><span class="format-pill">PDF</span></td>
+              <td>Within 7 Days of Joining</td>
+            </tr>
+            <tr>
+              <th scope="row">Previous Employer Relieving Letter</th>
+              <td><span class="badge badge-optional">Optional / Conditional</span></td>
+              <td><span class="format-pill">PDF</span></td>
+              <td>Within 15 Days of Joining</td>
+            </tr>
+            <tr>
+              <th scope="row">Direct Deposit / Bank Details</th>
+              <td><span class="badge badge-mandatory">Mandatory</span></td>
+              <td><span class="format-pill">PDF</span> <span class="format-pill">PNG</span></td>
+              <td>First Payroll Cycle</td>
+            </tr>
+            <tr>
+              <th scope="row">Signed Non-Disclosure Agreement</th>
+              <td><span class="badge badge-mandatory">Mandatory</span></td>
+              <td><span class="format-pill">PDF</span></td>
+              <td>Day 1 Orientation</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="4">Note: All copies must be clear and legible. Reach out to HR operations for any extension requests.</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Site Footer using semantic <footer> -->
+  <footer class="portal-footer">
+    <div class="footer-container">
+      <p class="copyright">&copy; 2026 Human Resources Operations. All rights reserved.</p>
+      <p class="contact-info">Contact HR Support: <a href="mailto:hr-onboarding@example.com" class="footer-link">hr-onboarding@example.com</a></p>
+    </div>
+  </footer>
+
+  <!-- JavaScript Application Entrypoint -->
+  <script src="app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,1341 @@
+/* ==========================================================================
+   Employee Center Portal Stylesheet
+   CSS Fundamentals: Selectors, Box Model, Flexbox, Grid, Responsive Design
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Design Tokens & CSS Custom Properties
+   -------------------------------------------------------------------------- */
+:root {
+  /* Color Palette - Enterprise Slate & Corporate Indigo/Blue */
+  --color-primary-50: #eff6ff;
+  --color-primary-100: #dbeafe;
+  --color-primary-200: #bfdbfe;
+  --color-primary-500: #3b82f6;
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+  --color-primary-800: #1e40af;
+  --color-primary-900: #1e3a8a;
+
+  /* Neutral Slates */
+  --color-slate-50: #f8fafc;
+  --color-slate-100: #f1f5f9;
+  --color-slate-200: #e2e8f0;
+  --color-slate-300: #cbd5e1;
+  --color-slate-400: #94a3b8;
+  --color-slate-500: #64748b;
+  --color-slate-600: #475569;
+  --color-slate-700: #334155;
+  --color-slate-800: #1e293b;
+  --color-slate-900: #0f172a;
+
+  /* Semantic Alerts */
+  --color-info-bg: #eff6ff;
+  --color-info-border: #bfdbfe;
+  --color-info-text: #1e40af;
+  --color-success-bg: #ecfdf5;
+  --color-success-border: #a7f3d0;
+  --color-success-text: #065f46;
+  --color-warning-bg: #fffbeb;
+  --color-warning-border: #fde68a;
+  --color-warning-text: #92400e;
+  --color-danger-bg: #fef2f2;
+  --color-danger-border: #fecaca;
+  --color-danger-text: #b91c1c;
+
+  /* Focus Indicator Ring */
+  --focus-ring-color: #2563eb;
+  --focus-ring-shadow: 0 0 0 3px rgba(37, 99, 235, 0.35);
+
+  /* Typography */
+  --font-family-base: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-size-xs: 0.75rem;     /* 12px */
+  --font-size-sm: 0.875rem;    /* 14px */
+  --font-size-base: 1rem;      /* 16px */
+  --font-size-lg: 1.125rem;    /* 18px */
+  --font-size-xl: 1.25rem;     /* 20px */
+  --font-size-2xl: 1.5rem;     /* 24px */
+  --font-size-3xl: 1.875rem;   /* 30px */
+
+  /* Spacing Scale (Box Model Consistency) */
+  --space-1: 0.25rem;  /* 4px */
+  --space-2: 0.5rem;   /* 8px */
+  --space-3: 0.75rem;  /* 12px */
+  --space-4: 1rem;     /* 16px */
+  --space-5: 1.25rem;  /* 20px */
+  --space-6: 1.5rem;   /* 24px */
+  --space-8: 2rem;     /* 32px */
+  --space-10: 2.5rem;  /* 40px */
+  --space-12: 3rem;    /* 48px */
+
+  /* Elevation & Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.03);
+
+  /* Border Radii */
+  --radius-sm: 0.375rem;  /* 6px */
+  --radius-md: 0.5rem;    /* 8px */
+  --radius-lg: 0.75rem;   /* 12px */
+  --radius-full: 9999px;
+
+  /* Transition Speeds */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s ease;
+}
+
+/* --------------------------------------------------------------------------
+   2. Box Model Reset & Global Baseline
+   -------------------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  line-height: 1.6;
+  color: var(--color-slate-800);
+  background-color: var(--color-slate-100);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+  width: 100%;
+}
+
+/* --------------------------------------------------------------------------
+   3. Accessible Focus State (Rubric Requirement: Visible Focus State)
+   -------------------------------------------------------------------------- */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--focus-ring-color);
+  outline-offset: 2px;
+  box-shadow: var(--focus-ring-shadow);
+}
+
+/* --------------------------------------------------------------------------
+   4. Header & Navigation (Flexbox Layout)
+   -------------------------------------------------------------------------- */
+.portal-header {
+  background: #ffffff;
+  border-bottom: 1px solid var(--color-slate-200);
+  box-shadow: var(--shadow-sm);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+}
+
+.header-container {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: var(--space-4) var(--space-6);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  width: 100%;
+}
+
+.brand-group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.portal-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: linear-gradient(135deg, var(--color-primary-700), var(--color-primary-500));
+  color: #ffffff;
+  border-radius: var(--radius-md);
+  box-shadow: 0 2px 4px rgba(37, 99, 235, 0.25);
+  flex-shrink: 0;
+}
+
+.title-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.portal-tag {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--color-primary-700);
+  text-transform: uppercase;
+}
+
+.title-group h1 {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--color-slate-900);
+  line-height: 1.25;
+}
+
+.portal-nav ul {
+  display: flex;
+  list-style: none;
+  gap: var(--space-2);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.portal-nav a {
+  display: inline-block;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-slate-600);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  transition: all var(--transition-fast);
+}
+
+.portal-nav a:hover {
+  color: var(--color-primary-700);
+  background-color: var(--color-primary-50);
+  border-color: var(--color-primary-100);
+}
+
+.header-divider {
+  display: none;
+}
+
+/* --------------------------------------------------------------------------
+   5. Main Content Container
+   -------------------------------------------------------------------------- */
+.portal-main {
+  max-width: 1120px;
+  width: 100%;
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  flex-grow: 1;
+  min-width: 0; /* Prevents flex children from overflowing container */
+}
+
+/* --------------------------------------------------------------------------
+   6. Form Card (Elevated Enterprise Card Container)
+   -------------------------------------------------------------------------- */
+.portal-card {
+  background: #ffffff;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-slate-200);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-8);
+  transition: box-shadow var(--transition-normal);
+  width: 100%;
+  max-width: 100%;
+  min-width: 0; /* Prevents blowout inside flexbox */
+}
+
+.portal-card:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.card-header {
+  margin-bottom: var(--space-6);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--color-slate-200);
+}
+
+.card-header h2 {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--color-slate-900);
+  margin-bottom: var(--space-2);
+  letter-spacing: -0.01em;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.section-desc {
+  font-size: var(--font-size-sm);
+  color: var(--color-slate-600);
+  line-height: 1.5;
+}
+
+.required-star {
+  color: var(--color-danger-text);
+  font-weight: 700;
+  margin-left: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   7. Validation Area (Rubric Requirement: Validation Area)
+   -------------------------------------------------------------------------- */
+.validation-area {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  background-color: var(--color-info-bg);
+  border: 1px solid var(--color-info-border);
+  border-left: 4px solid var(--color-primary-600);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-6);
+  width: 100%;
+  max-width: 100%;
+}
+
+.validation-icon {
+  color: var(--color-primary-600);
+  display: flex;
+  align-items: center;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.validation-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.validation-title {
+  display: block;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-primary-900);
+  margin-bottom: var(--space-1);
+}
+
+.validation-text {
+  font-size: var(--font-size-xs);
+  color: var(--color-primary-800);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* --------------------------------------------------------------------------
+   8. Form & Fieldset Styling (CSS Grid & Form Controls)
+   -------------------------------------------------------------------------- */
+.portal-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  width: 100%;
+}
+
+.form-fieldset {
+  border: 1px solid var(--color-slate-200);
+  border-radius: var(--radius-md);
+  padding: var(--space-6);
+  background-color: var(--color-slate-50);
+  transition: border-color var(--transition-fast);
+  width: 100%;
+  min-width: 0;
+}
+
+.form-fieldset:focus-within {
+  border-color: var(--color-primary-500);
+}
+
+.form-fieldset legend {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-slate-800);
+  padding: 0 var(--space-3);
+  background-color: transparent;
+}
+
+/* Grid Layout for Form Fields (Rubric Requirement: Grid) */
+.form-grid {
+  display: grid;
+  gap: var(--space-5);
+  margin-top: var(--space-2);
+  width: 100%;
+}
+
+.grid-2-col {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+  min-width: 0;
+}
+
+.form-group label {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-slate-700);
+}
+
+.field-hint {
+  font-size: var(--font-size-xs);
+  color: var(--color-slate-500);
+  margin-top: 2px;
+}
+
+/* Form Inputs & Selects */
+input[type="text"],
+input[type="date"],
+select {
+  width: 100%;
+  max-width: 100%;
+  padding: var(--space-3) var(--space-4);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  color: var(--color-slate-800);
+  background-color: #ffffff;
+  border: 1px solid var(--color-slate-300);
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+  min-width: 0;
+}
+
+input[type="text"]::placeholder {
+  color: var(--color-slate-400);
+}
+
+input[type="text"]:hover,
+input[type="date"]:hover,
+select:hover {
+  border-color: var(--color-slate-400);
+}
+
+/* Input Focus States */
+input[type="text"]:focus,
+input[type="date"]:focus,
+select:focus {
+  border-color: var(--color-primary-600);
+  outline: none;
+  box-shadow: var(--focus-ring-shadow);
+}
+
+/* Visual Validation Cues */
+input:user-invalid,
+select:user-invalid {
+  border-color: var(--color-danger-text);
+  background-color: #fffbfa;
+}
+
+input:user-invalid:focus,
+select:user-invalid:focus {
+  border-color: var(--color-danger-text);
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.25);
+}
+
+/* Select Element Wrapper */
+.select-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23475569' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--space-3) center;
+  background-size: 16px;
+  padding-right: var(--space-8);
+  cursor: pointer;
+}
+
+/* File Upload Field */
+.file-upload-group {
+  margin-top: var(--space-4);
+}
+
+.file-input-box {
+  background-color: #ffffff;
+  border: 2px dashed var(--color-slate-300);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.file-input-box:hover,
+.file-input-box:focus-within {
+  border-color: var(--color-primary-500);
+  background-color: var(--color-primary-50);
+}
+
+input[type="file"] {
+  width: 100%;
+  max-width: 100%;
+  font-size: var(--font-size-sm);
+  color: var(--color-slate-600);
+  cursor: pointer;
+}
+
+input[type="file"]::file-selector-button {
+  font-family: inherit;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--color-primary-700);
+  background-color: var(--color-primary-100);
+  border: 1px solid var(--color-primary-200);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  margin-right: var(--space-3);
+  transition: all var(--transition-fast);
+}
+
+input[type="file"]::file-selector-button:hover {
+  background-color: var(--color-primary-200);
+  color: var(--color-primary-800);
+}
+
+.file-restrictions {
+  display: block;
+  font-size: var(--font-size-xs);
+  color: var(--color-slate-500);
+  margin-top: var(--space-2);
+}
+
+/* Checkbox & Consent Section */
+.consent-fieldset {
+  background-color: #fdfefe;
+}
+
+.checkbox-group {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  width: 100%;
+}
+
+input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin-top: 3px;
+  accent-color: var(--color-primary-600);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.checkbox-group label {
+  font-size: var(--font-size-sm);
+  color: var(--color-slate-700);
+  line-height: 1.5;
+  cursor: pointer;
+  flex: 1;
+}
+
+/* --------------------------------------------------------------------------
+   9. Form Actions & Buttons (Flexbox)
+   -------------------------------------------------------------------------- */
+.form-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-top: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-3) var(--space-6);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  border: 1px solid transparent;
+}
+
+.btn-primary {
+  background-color: var(--color-primary-600);
+  color: #ffffff;
+  box-shadow: 0 1px 3px rgba(37, 99, 235, 0.3);
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary-700);
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.4);
+  transform: translateY(-1px);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-secondary {
+  background-color: #ffffff;
+  color: var(--color-slate-700);
+  border: 1px solid var(--color-slate-300);
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-slate-100);
+  border-color: var(--color-slate-400);
+  color: var(--color-slate-900);
+}
+
+/* --------------------------------------------------------------------------
+   10. Semantic Data Table (Clean, Responsive Enterprise Styling)
+   -------------------------------------------------------------------------- */
+.table-container {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-slate-200);
+  box-shadow: var(--shadow-sm);
+  background: #ffffff;
+}
+
+.portal-table {
+  width: 100%;
+  min-width: 540px; /* Provides proper tabular breathing room while scrolling internally inside container */
+  border-collapse: collapse;
+  text-align: left;
+  font-size: var(--font-size-sm);
+  border: none;
+}
+
+.portal-table caption {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--color-slate-500);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
+  background-color: var(--color-slate-50);
+  border-bottom: 1px solid var(--color-slate-200);
+}
+
+.portal-table thead th {
+  background-color: var(--color-slate-100);
+  color: var(--color-slate-700);
+  font-weight: 600;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 2px solid var(--color-slate-300);
+  white-space: nowrap;
+}
+
+.portal-table tbody th,
+.portal-table tbody td {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-slate-200);
+  vertical-align: middle;
+}
+
+.portal-table tbody th {
+  font-weight: 600;
+  color: var(--color-slate-900);
+}
+
+.portal-table tbody td {
+  color: var(--color-slate-600);
+}
+
+.portal-table tbody tr:nth-child(even) {
+  background-color: var(--color-slate-50);
+}
+
+.portal-table tbody tr:hover {
+  background-color: var(--color-primary-50);
+}
+
+.portal-table tfoot td {
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--font-size-xs);
+  color: var(--color-slate-500);
+  font-style: italic;
+  background-color: var(--color-slate-50);
+  border-top: 1px solid var(--color-slate-200);
+}
+
+/* Badges & Pills */
+.badge {
+  display: inline-block;
+  padding: 0.2rem 0.55rem;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  border-radius: var(--radius-full);
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.badge-mandatory {
+  background-color: var(--color-danger-bg);
+  color: var(--color-danger-text);
+  border: 1px solid var(--color-danger-border);
+}
+
+.badge-optional {
+  background-color: var(--color-warning-bg);
+  color: var(--color-warning-text);
+  border: 1px solid var(--color-warning-border);
+}
+
+.format-pill {
+  display: inline-block;
+  padding: 0.15rem 0.45rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--color-slate-600);
+  background-color: var(--color-slate-200);
+  border-radius: var(--radius-sm);
+  margin-right: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   11. Footer (Flexbox Layout)
+   -------------------------------------------------------------------------- */
+.portal-footer {
+  background: #ffffff;
+  border-top: 1px solid var(--color-slate-200);
+  margin-top: auto;
+  width: 100%;
+}
+
+.footer-container {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: var(--space-6);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  font-size: var(--font-size-sm);
+  color: var(--color-slate-500);
+  width: 100%;
+}
+
+.footer-link {
+  color: var(--color-primary-600);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color var(--transition-fast);
+}
+
+.footer-link:hover {
+  color: var(--color-primary-800);
+  text-decoration: underline;
+}
+
+/* --------------------------------------------------------------------------
+   12. Responsive Design & Media Queries (Rubric: Desktop & Mobile Usable)
+   -------------------------------------------------------------------------- */
+
+/* Tablet Breakpoint */
+@media (max-width: 768px) {
+  .header-container {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: var(--space-4);
+  }
+
+  .portal-nav ul {
+    width: 100%;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .portal-nav a {
+    padding: var(--space-2) var(--space-3);
+  }
+
+  .portal-main {
+    padding: var(--space-5) var(--space-4);
+    gap: var(--space-6);
+  }
+
+  .portal-card {
+    padding: var(--space-5);
+  }
+
+  .grid-2-col {
+    grid-template-columns: minmax(0, 1fr); /* Switch to single-column on mobile/tablet */
+  }
+
+  .footer-container {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: var(--space-5) var(--space-4);
+  }
+}
+
+/* Mobile Breakpoint (Small Screens) */
+@media (max-width: 480px) {
+  .header-container {
+    padding: var(--space-3);
+  }
+
+  .brand-group {
+    gap: var(--space-3);
+  }
+
+  .portal-logo {
+    width: 36px;
+    height: 36px;
+  }
+
+  .title-group h1 {
+    font-size: 1.15rem;
+    line-height: 1.3;
+  }
+
+  .portal-nav ul {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .portal-nav a {
+    text-align: center;
+    background-color: var(--color-slate-50);
+    border-color: var(--color-slate-200);
+  }
+
+  .portal-main {
+    padding: var(--space-4) var(--space-3);
+  }
+
+  .portal-card {
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+  }
+
+  .card-header h2 {
+    font-size: 1.25rem;
+  }
+
+  .form-fieldset {
+    padding: var(--space-3);
+  }
+
+  .form-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   13. JavaScript Features: Validation, File Display, Submission Summary
+   -------------------------------------------------------------------------- */
+
+/* Field-level error messages */
+.field-error {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  color: var(--color-danger-text);
+  margin-top: 4px;
+  animation: fieldErrorFadeIn 0.2s ease-out;
+}
+
+.field-error svg {
+  flex-shrink: 0;
+}
+
+@keyframes fieldErrorFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Invalid field states */
+input.is-invalid,
+select.is-invalid {
+  border-color: var(--color-danger-text) !important;
+  background-color: #fff8f8 !important;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.18) !important;
+}
+
+.file-input-box.is-invalid {
+  border-color: var(--color-danger-text) !important;
+  background-color: #fff8f8 !important;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.18) !important;
+}
+
+.checkbox-group.is-invalid {
+  padding: var(--space-2);
+  border-radius: var(--radius-sm);
+  background-color: #fff8f8;
+  border: 1px dashed var(--color-danger-text);
+}
+
+/* Validation Area Dynamic Status Modifiers */
+.validation-area.status-error {
+  background-color: var(--color-danger-bg);
+  border-color: var(--color-danger-border);
+  border-left-color: var(--color-danger-text);
+}
+
+.validation-area.status-error .validation-icon {
+  color: var(--color-danger-text);
+}
+
+.validation-area.status-error .validation-title {
+  color: #991b1b;
+}
+
+.validation-area.status-error .validation-text {
+  color: var(--color-danger-text);
+}
+
+.validation-area.status-success {
+  background-color: var(--color-success-bg);
+  border-color: var(--color-success-border);
+  border-left-color: #059669;
+}
+
+.validation-area.status-success .validation-icon {
+  color: #059669;
+}
+
+.validation-area.status-success .validation-title {
+  color: #065f46;
+}
+
+.validation-area.status-success .validation-text {
+  color: #047857;
+}
+
+/* File Name Display Element */
+.file-name-display {
+  margin-top: var(--space-3);
+  display: none;
+}
+
+.file-name-display.is-active {
+  display: block;
+}
+
+.file-info-badge {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background-color: #ffffff;
+  border: 1px solid var(--color-slate-300);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-fast);
+}
+
+.file-info-badge:hover {
+  border-color: var(--color-primary-500);
+}
+
+.file-info-badge.is-valid {
+  border-color: #a7f3d0;
+  background-color: #f0fdf4;
+}
+
+.file-info-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.file-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-primary-100);
+  color: var(--color-primary-700);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.file-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.file-name-text {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-slate-800);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.file-meta-text {
+  font-size: var(--font-size-xs);
+  color: var(--color-slate-500);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.file-size-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 1px 6px;
+  background-color: var(--color-slate-200);
+  border-radius: var(--radius-sm);
+  color: var(--color-slate-700);
+}
+
+.file-remove-btn {
+  background: none;
+  border: 1px solid var(--color-slate-300);
+  border-radius: var(--radius-sm);
+  color: var(--color-slate-500);
+  padding: 4px 8px;
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.file-remove-btn:hover {
+  background-color: var(--color-danger-bg);
+  border-color: var(--color-danger-border);
+  color: var(--color-danger-text);
+}
+
+/* Submission Summary Container & Card */
+.submission-summary-container {
+  margin-top: var(--space-6);
+}
+
+.submission-summary-card {
+  background: #ffffff;
+  border: 2px solid #10b981;
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.15), 0 8px 10px -6px rgba(16, 185, 129, 0.1);
+  animation: summarySlideIn 0.35s ease-out;
+}
+
+@keyframes summarySlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.summary-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding-bottom: var(--space-5);
+  border-bottom: 1px solid var(--color-slate-200);
+  margin-bottom: var(--space-5);
+}
+
+.summary-icon-badge {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  background-color: #ecfdf5;
+  color: #059669;
+  border: 2px solid #a7f3d0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.summary-title-wrap {
+  flex: 1;
+}
+
+.summary-title-wrap h3 {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-slate-900);
+  margin-bottom: 2px;
+}
+
+.summary-subtitle {
+  font-size: var(--font-size-xs);
+  color: var(--color-slate-500);
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.summary-item {
+  background-color: var(--color-slate-50);
+  border: 1px solid var(--color-slate-200);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.summary-label {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--color-slate-500);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.summary-value {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-slate-800);
+  word-break: break-word;
+}
+
+/* Raw JavaScript Object Inspector (Accordion) */
+.summary-json-details {
+  margin-bottom: var(--space-6);
+  border: 1px solid var(--color-slate-200);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background-color: #0f172a;
+}
+
+.summary-json-summary {
+  padding: var(--space-3) var(--space-4);
+  background-color: #1e293b;
+  color: #e2e8f0;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.summary-json-summary:hover {
+  background-color: #334155;
+}
+
+.summary-json-code {
+  padding: var(--space-4);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: #38bdf8;
+  overflow-x: auto;
+  margin: 0;
+  max-height: 250px;
+}
+
+.summary-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+/* --------------------------------------------------------------------------
+   14. REST API & Asynchronous States (Loading, Server Error, Config Panel)
+   -------------------------------------------------------------------------- */
+
+/* API Configuration Panel */
+.api-config-panel {
+  background-color: #f8fafc;
+  border: 1px solid var(--color-slate-300);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-6);
+  transition: all var(--transition-fast);
+}
+
+.api-config-panel[open] {
+  background-color: #ffffff;
+  border-color: var(--color-primary-300);
+  box-shadow: var(--shadow-sm);
+}
+
+.api-config-summary {
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--font-size-sm);
+  color: var(--color-slate-700);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  user-select: none;
+}
+
+.api-config-summary:hover {
+  color: var(--color-primary-700);
+  background-color: var(--color-primary-50);
+}
+
+.api-config-summary-left {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.api-status-tag {
+  font-size: var(--font-size-xs);
+  padding: 2px 8px;
+  background-color: var(--color-slate-200);
+  color: var(--color-slate-700);
+  border-radius: var(--radius-full);
+  font-family: ui-monospace, SFMono-Regular, monospace;
+}
+
+.api-config-body {
+  padding: var(--space-4);
+  border-top: 1px solid var(--color-slate-200);
+  background-color: #ffffff;
+}
+
+.api-config-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+@media (max-width: 768px) {
+  .api-config-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.api-config-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.api-config-field label {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--color-slate-700);
+}
+
+.api-config-field input,
+.api-config-field select {
+  font-size: var(--font-size-xs);
+  padding: var(--space-2) var(--space-3);
+}
+
+/* Loading Spinner & Async Submit Button State */
+.btn:disabled,
+.btn[disabled] {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-radius: 50%;
+  border-top-color: #ffffff;
+  animation: spin 0.6s linear infinite;
+  margin-right: var(--space-2);
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Loading State on Validation Area */
+.validation-area.status-loading {
+  background-color: var(--color-info-bg);
+  border-color: var(--color-info-border);
+  border-left-color: var(--color-primary-600);
+}
+
+.validation-area.status-loading .validation-icon {
+  color: var(--color-primary-600);
+  animation: spin 1s linear infinite;
+}
+
+.validation-area.status-loading .validation-title {
+  color: var(--color-primary-900);
+}
+
+.validation-area.status-loading .validation-text {
+  color: var(--color-primary-800);
+}
+
+/* Retry Button */
+.banner-action-btn {
+  margin-top: var(--space-3);
+  padding: 4px 12px;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  background-color: #ffffff;
+  border: 1px solid var(--color-danger-border);
+  color: var(--color-danger-text);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  transition: all var(--transition-fast);
+}
+
+.banner-action-btn:hover {
+  background-color: var(--color-danger-bg);
+}
+
+

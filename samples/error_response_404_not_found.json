@@ -1,0 +1,9 @@
+{
+  "success": false,
+  "statusCode": 404,
+  "error": "DOCUMENT_NOT_FOUND",
+  "message": "Document submission with reference 'SUB-999999' was not found.",
+  "timestamp": "2026-09-08T10:45:35.890Z",
+  "path": "/api/v1/onboarding/documents/SUB-999999",
+  "correlationId": "corr-notfound-404"
+}
